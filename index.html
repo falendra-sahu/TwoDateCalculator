@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two date Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        #error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Two date Calculator</h1>
+        <form id="dateForm">
+            <label for="startDate">Start date:</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="endDate">End date:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <button type="button" onclick="calculateDifference()">Calculate</button>
+        </form>
+        <h2 id="result"></h2>
+        <div id="error"></div>
+    </div>
+
+    <script>
+        function calculateDifference() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const errorDiv = document.getElementById('error');
+
+            errorDiv.innerText = ""; // Clear previous errors
+
+            if (!startDate || !endDate) {
+                alert("Please fill all field।");
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            if (end < start) {
+                errorDiv.innerText = "The end date must be greater than the start date.";
+                return;
+            }
+
+            const difference = Math.abs(end - start);
+            const daysDifference = Math.ceil(difference / (1000 * 60 * 60 * 24)) + 1; // Include both dates
+
+            document.getElementById('result').innerText = `Total days: ${daysDifference} Days`;
+        }
+    </script>
+</body>
+</html>
