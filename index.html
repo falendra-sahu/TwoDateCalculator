@@ -3,110 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two date Calculator</title>
+    <title>Date Calculator</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            color: #333;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
         }
+
         .container {
-            background-color: #fff;
-            padding: 20px 40px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            text-align: center;
-            width: 300px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
         }
+
         h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
         }
+
+        .calculator {
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
         label {
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #666;
         }
-        input {
+
+        input[type="date"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
         }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
         button {
-            margin-top: 20px;
-            padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 0.7rem 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s;
+            flex: 1;
         }
+
         button:hover {
             background-color: #45a049;
         }
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
+
+        button.clear {
+            background-color: #f44336;
+        }
+
+        button.clear:hover {
+            background-color: #d32f2f;
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
             color: #333;
         }
-        #error {
-            color: red;
-            margin-top: 10px;
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Two date Calculator</h1>
-        <form id="dateForm">
-            <label for="startDate">Start date:</label>
-            <input type="date" id="startDate" name="startDate" required>
+        <h1>Date Calculator</h1>
+        
+        <div class="calculator">
+            <h2>Calculate Date Difference</h2>
+            <div class="input-group">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date">
+            </div>
+            <div class="input-group">
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date">
+            </div>
+            <div class="button-group">
+                <button onclick="calculateDifference()">Calculate Difference</button>
+                <button class="clear" onclick="clearDifference()">Clear</button>
+            </div>
+            <div id="difference-result" class="result"></div>
+        </div>
 
-            <label for="endDate">End date:</label>
-            <input type="date" id="endDate" name="endDate" required>
-
-            <button type="button" onclick="calculateDifference()">Calculate</button>
-        </form>
-        <h2 id="result"></h2>
-        <div id="error"></div>
+        <div class="calculator">
+            <h2>Add/Subtract Days</h2>
+            <div class="input-group">
+                <label for="base-date">Base Date:</label>
+                <input type="date" id="base-date">
+            </div>
+            <div class="input-group">
+                <label for="days">Number of Days:</label>
+                <input type="number" id="days" placeholder="Enter positive or negative number">
+            </div>
+            <div class="button-group">
+                <button onclick="calculateNewDate()">Calculate New Date</button>
+                <button class="clear" onclick="clearNewDate()">Clear</button>
+            </div>
+            <div id="new-date-result" class="result"></div>
+        </div>
     </div>
 
     <script>
-        function calculateDifference() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const errorDiv = document.getElementById('error');
-
-            errorDiv.innerText = ""; // Clear previous errors
-
-            if (!startDate || !endDate) {
-                alert("Please fill all field।");
-                return;
-            }
-
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-
-            if (end < start) {
-                errorDiv.innerText = "The end date must be greater than the start date.";
-                return;
-            }
-
-            const difference = Math.abs(end - start);
-            const daysDifference = Math.ceil(difference / (1000 * 60 * 60 * 24)) + 1; // Include both dates
-
-            document.getElementById('result').innerText = `Total days: ${daysDifference} Days`;
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
         }
+
+        function calculateDifference() {
+            const startDate = new Date(document.getElementById('start-date').value);
+            const endDate = new Date(document.getElementById('end-date').value);
+            
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                document.getElementById('difference-result').textContent = 'Please select valid dates';
+                return;
+            }
+
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(0, 0, 0, 0);
+
+            const diffTime = Math.abs(endDate - startDate);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            document.getElementById('difference-result').textContent = `Difference: ${diffDays} day(s)`;
+        }
+
+        function calculateNewDate() {
+            const baseDate = new Date(document.getElementById('base-date').value);
+            const days = parseInt(document.getElementById('days').value);
+            
+            if (isNaN(baseDate.getTime()) || isNaN(days)) {
+                document.getElementById('new-date-result').textContent = 'Please select a valid date and enter number of days';
+                return;
+            }
+
+            const newDate = new Date(baseDate.setDate(baseDate.getDate() + days));
+            const formattedDate = formatDate(newDate);
+            
+            document.getElementById('new-date-result').textContent = `New Date: ${formattedDate}`;
+        }
+
+        function clearDifference() {
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            document.getElementById('difference-result').textContent = '';
+        }
+
+        function clearNewDate() {
+            document.getElementById('base-date').value = '';
+            document.getElementById('days').value = '';
+            document.getElementById('new-date-result').textContent = '';
+        }
+
+        // Format dates to DD-MM-YYYY when displaying results
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+            input.addEventListener('change', (e) => {
+                const date = new Date(e.target.value);
+                if (!isNaN(date.getTime())) {
+                    e.target.setAttribute('data-date', formatDate(date));
+                } else {
+                    e.target.removeAttribute('data-date');
+                }
+            });
+        });
     </script>
 </body>
 </html>
